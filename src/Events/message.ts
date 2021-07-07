@@ -1,5 +1,6 @@
 import { Event, Command } from "../Interfaces";
 import { Message } from "discord.js";
+import { blacklistedWords } from "../Assets/blacklistedWords";
 
 export const event: Event = {
   name: "message",
@@ -22,5 +23,8 @@ export const event: Event = {
 
     const command = client.commands.get(cmd) || client.aliases.get(cmd);
     if (command) (command as Command).run(client, message, args);
+
+    // Auto Moderator
+    blacklistedWords;
   },
 };

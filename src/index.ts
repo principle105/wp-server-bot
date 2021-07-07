@@ -1,2 +1,2 @@
 import Client from "./Client";
-new Client().init();
+new Client().start();

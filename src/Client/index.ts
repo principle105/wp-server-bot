@@ -11,7 +11,8 @@ class WordPractice extends Client {
   public aliases: Collection<string, Command> = new Collection();
   public config: Config = configData;
 
-  public async init() {
+  public async start() {
+    console.log("Starting bot...");
     this.login(this.config.token);
     connect(this.config.mongodbURI, {
       useUnifiedTopology: true,
