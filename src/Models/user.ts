@@ -6,6 +6,7 @@ const UserSchema = new Schema<User>({
   name: { type: String, required: true },
   discriminator: { type: String, required: true },
   avatar: { type: String, required: true },
+  xp: { type: Number, default: 0 },
 });
 
 export default model<User>("User", UserSchema);

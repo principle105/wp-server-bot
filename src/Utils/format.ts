@@ -1,5 +1,5 @@
 import { MessageEmbed } from "discord.js";
-import { colours } from "../lib/constants";
+import { colours, botAvatar } from "../lib/constants";
 
 export const createEmbed = (
   title: string,
@@ -11,5 +11,5 @@ export const createEmbed = (
     .setDescription(description)
     .setColor(colour)
     .setTimestamp(new Date())
-    .setFooter("wordPractice Helper");
+    .setFooter("wordPractice Helper", botAvatar);
 };
