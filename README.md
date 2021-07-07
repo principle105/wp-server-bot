@@ -12,7 +12,7 @@ npm install
 
 ## Setup
 
-Create a `config.json` file in the `src` folder of the repository
+Create a `config.json` file in the root directory
 
 Including the following in your `config.json` file
 

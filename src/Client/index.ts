@@ -3,7 +3,7 @@ import { connect } from "mongoose";
 import { readdirSync } from "fs";
 import path from "path";
 import { Command, Event, Config } from "../Interfaces";
-import configData from "../config.json";
+import configData from "../../config.json";
 
 class WordPractice extends Client {
   public commands: Collection<string, Command> = new Collection();
