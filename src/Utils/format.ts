@@ -35,21 +35,29 @@ export const getUserFromMention = (
 };
 
 export const evaluateArguments = (
+  client: WordPractice,
   argsGiven: string[],
-  cmdArgs: string[]
+  cmdArgs: string[],
+  required: number
 ): any[] => {
-  if (!argsGiven.length || !Object.keys(cmdArgs).length) return argsGiven;
+  // Checking if no arguments are asked for
+  if (!Object.keys(cmdArgs).length) return [];
 
-  if (argsGiven.length < Object.keys(cmdArgs).length) {
-    throw "";
-  }
+  // Checking if amount of arguments given is less than required amount
+  if (argsGiven.length < required) throw "You are missing a required argument";
+
   return cmdArgs.map((argType, i) => {
-    return convertArgumentToType(argsGiven[i], argType);
+    if (!argsGiven[i]) return null;
+    return convertArgumentToType(client, argsGiven[i], argType);
   });
 };
 
 // Not Finished
-const convertArgumentToType = (arg: string, type: string) => {
+const convertArgumentToType = (
+  client: WordPractice,
+  arg: string,
+  type: string
+) => {
   switch (type) {
     case "string":
       return arg;
@@ -57,6 +65,10 @@ const convertArgumentToType = (arg: string, type: string) => {
       let newArg = parseInt(arg);
       if (!newArg) throw "That is not a valid number";
       return newArg;
+    case "user":
+      let user = getUserFromMention(client, arg);
+      if (!user) throw "That is not a valid user";
+      return user;
     default:
       return arg;
   }

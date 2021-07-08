@@ -6,7 +6,6 @@ export const command: Command = {
   aliases: ["p"],
   description: "",
   run: async (client, message, args) => {
-    console.log("I got", args);
     let embed = createEmbed("Pong!", `${client.ws.ping} ms`);
     message.channel.send(embed);
   },
