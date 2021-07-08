@@ -2,6 +2,7 @@ import { Event, Command } from "../Interfaces";
 import { Message } from "discord.js";
 import { blacklistedWords } from "../Assets/blacklistedWords";
 import User from "../Models/user";
+import { evaluateArguments } from "../Utils/format";
 
 export const event: Event = {
   name: "message",
@@ -12,10 +13,11 @@ export const event: Event = {
 
     // Leveling System
     if (!message.content.startsWith(client.config.prefix)) {
-      let user = await User.findOne({ userID: a.id });
+      let oldUser,
+        user = await User.findOne({ userID: a.id });
       // Creating an account for the user if they do not have one already
-      if (!user) {
-        user = await User.create({
+      if (!oldUser) {
+        oldUser = await User.create({
           userID: a.id,
           name: a.username,
           discriminator: a.discriminator,
@@ -23,34 +25,38 @@ export const event: Event = {
         });
       } else if (
         [a.username, a.discriminator, a.avatar] !==
-        [user.name, user.discriminator, user.avatar]
+        [oldUser.name, oldUser.discriminator, oldUser.avatar]
       ) {
-        // Updating user in database
-        await User.updateOne(
-          { userID: message.author.id },
-          {
-            name: a.username,
-            discriminator: a.discriminator,
-            avatar: a.avatar,
-          }
-        );
+        // Updating user object to perform update query all at once
+        user.name = a.username;
+        user.discriminator = a.discriminator;
+        user.avatar = a.avatar;
+      }
+      user.xp += Math.floor(Math.random() * 3);
+      // Updating user in database if user object changes
+      if (user !== oldUser) {
+        await User.updateOne({ userID: a.id }, user);
       }
       return;
     }
 
     // Handling arguments
-    const args = message.content
+    let args = message.content
       .slice(client.config.prefix.length)
       .trim()
       .split(/ +/g);
-    const cmd = args.shift().toLowerCase();
+    const commandName = args.shift().toLowerCase();
 
-    if (!cmd) {
-      return;
-    }
+    // Checking if command is valid
+    if (!client.commands.has(commandName)) return;
 
-    const command = client.commands.get(cmd) || client.aliases.get(cmd);
-    if (command) (command as Command).run(client, message, args);
+    console.log("beforears", args);
+    let newargs = evaluateArguments(args, ["string", "number"]);
+    console.log("newargs", newargs);
+
+    const command =
+      client.commands.get(commandName) || client.aliases.get(commandName);
+    if (command) (command as Command).run(client, message, newargs);
 
     // Auto Moderator
     blacklistedWords;

@@ -11,6 +11,8 @@ class WordPractice extends Client {
   public aliases: Collection<string, Command> = new Collection();
   public config: Config = configData;
 
+  public msgCooldown: Collection<string, Date> = new Collection();
+
   public async start() {
     console.log("Starting bot...");
     this.login(this.config.token);
