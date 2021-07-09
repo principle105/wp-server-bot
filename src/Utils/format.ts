@@ -39,7 +39,7 @@ export const evaluateArguments = (
   argsGiven: string[],
   cmdArgs: string[],
   required: number
-): any[] => {
+): (string | object | number)[] => {
   // Checking if no arguments are asked for
   if (!Object.keys(cmdArgs).length) return [];
 

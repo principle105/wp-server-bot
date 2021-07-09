@@ -19,7 +19,7 @@ export const event: Event = {
         let oldUser = await User.findOne({ userID: a.id });
         // Copying the oldUser variable without linking
         let user = JSON.parse(JSON.stringify(oldUser));
-        const xpEarned = Math.floor(Math.random() * 3);
+        const xpEarned = Math.floor(Math.random() * 10) + 15;
         // Creating an account for the user if they do not have one already
         if (!oldUser) {
           user = await User.create({
