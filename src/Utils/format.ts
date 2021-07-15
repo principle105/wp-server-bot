@@ -6,12 +6,12 @@ import { Argument } from "../Interfaces/Command";
 export const createEmbed = (
     title: string,
     description: string,
-    colour: number = colours.green
+    colour: string = "green"
 ): MessageEmbed => {
     return new MessageEmbed()
         .setTitle(title)
         .setDescription(description)
-        .setColor(colour)
+        .setColor(colours[colour])
         .setTimestamp(new Date())
         .setFooter("wordPractice Helper", botAvatar);
 };
@@ -69,6 +69,7 @@ const convertArgumentToType = (
         case "user":
             let user = getUserFromMention(client, arg);
             if (!user) throw "That is not a valid user";
+            if (user.bot) throw "That is user is a bot";
             return user;
         default:
             return arg;

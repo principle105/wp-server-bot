@@ -19,5 +19,6 @@ export interface Command {
     aliases?: string[];
     args?: string[];
     required?: number;
+    cooldown?: number;
     run: Run;
 }

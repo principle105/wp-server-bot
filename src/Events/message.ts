@@ -1,10 +1,8 @@
 import { Event, Command } from "../Interfaces";
-import { Message } from "discord.js";
+import { Message, Collection } from "discord.js";
 import { blacklistedWords } from "../Assets/blacklistedWords";
-import User from "../Models/user";
 import { evaluateArguments } from "../Utils/format";
 import { createEmbed } from "../Utils/format";
-import { colours } from "../lib/constants";
 import { Argument } from "../Interfaces/Command";
 import { getUserInfo } from "../Utils/database";
 
@@ -14,11 +12,48 @@ export const event: Event = {
         try {
             if (message.author.bot || !message.guild) return;
 
+            const { cooldowns } = client;
+
+            // Manages cooldowns
+            const manageCooldown = (
+                cmdName: string,
+                length: number,
+                showError: boolean = true
+            ) => {
+                if (!cooldowns.has(cmdName)) {
+                    cooldowns.set(cmdName, new Collection());
+                }
+                const now = Date.now();
+                const timestamps = cooldowns.get(cmdName);
+                const cooldownAmount = length * 1000;
+                if (timestamps.has(message.author.id)) {
+                    const expirationTime =
+                        timestamps.get(message.author.id) + cooldownAmount;
+
+                    if (now < expirationTime) {
+                        if (!showError) return;
+                        const timeLeft = (expirationTime - now) / 1000;
+                        const embed = createEmbed(
+                            "Cooldown",
+                            `Try again in ${timeLeft.toFixed(1)} second(s)`,
+                            "red"
+                        );
+                        message.channel.send(embed);
+                        return true;
+                    }
+                }
+                timestamps.set(message.author.id, now);
+                setTimeout(
+                    () => timestamps.delete(message.author.id),
+                    cooldownAmount
+                );
+            };
+
             // Leveling System
             if (!message.content.startsWith(client.config.prefix)) {
+                manageCooldown("msg", 60, false);
                 const xpEarned = Math.floor(Math.random() * 10) + 15;
-                await getUserInfo(message.author, true, ["xp", xpEarned]);
-                return;
+                return await getUserInfo(message.author, true, xpEarned);
             }
 
             // Handling arguments
@@ -34,6 +69,12 @@ export const event: Event = {
 
             // Checking if command is valid
             if (!command) return;
+
+            if (
+                command.cooldown &&
+                manageCooldown(command.name, command.cooldown)
+            )
+                return;
 
             let args: Argument[] = [];
             // Converting arguments to appropriate types
@@ -55,7 +96,7 @@ export const event: Event = {
             // Auto Moderator
             blacklistedWords;
         } catch (err) {
-            let embed = createEmbed("Error", `${err}`, colours.red);
+            let embed = createEmbed("Error", `${err}`, "red");
             message.channel.send(embed);
         }
     },

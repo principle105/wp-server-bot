@@ -11,7 +11,7 @@ class WordPractice extends Client {
     public aliases: Collection<string, Command> = new Collection();
     public config: Config = configData;
 
-    public cooldowns: Collection<string, Collection<string, Date>> =
+    public cooldowns: Collection<string, Collection<string, number>> =
         new Collection();
 
     public async start() {

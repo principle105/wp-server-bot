@@ -1,7 +1,6 @@
 import { Command } from "../../Interfaces";
 import { createEmbed } from "../../Utils/format";
 import { User } from "discord.js";
-import UserModel from "../../Models/user";
 import { getUserInfo } from "../../Utils/database";
 
 export const command: Command = {
@@ -9,6 +8,7 @@ export const command: Command = {
     aliases: ["rank", "levels", "ranks"],
     args: ["user"],
     description: "",
+    cooldown: 5,
     run: async (client, message, args, user) => {
         const userGiven = args[0] as User;
         const userData =
