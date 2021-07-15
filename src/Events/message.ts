@@ -57,7 +57,7 @@ export const event: Event = {
             }
 
             // Handling arguments
-            let rawArgs = message.content
+            let rawArgs: string[] = message.content
                 .slice(client.config.prefix.length)
                 .trim()
                 .split(/ +/g);

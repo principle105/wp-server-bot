@@ -1,7 +1,7 @@
 import { Command } from "../../Interfaces";
 import { createEmbed } from "../../Utils/format";
-import { User } from "discord.js";
 import { getUserInfo } from "../../Utils/database";
+import { User } from "discord.js";
 
 export const command: Command = {
     name: "level",
@@ -9,8 +9,8 @@ export const command: Command = {
     args: ["user"],
     description: "",
     cooldown: 5,
-    run: async (client, message, args, user) => {
-        const userGiven = args[0] as User;
+    run: async (client, message, args: [User], user) => {
+        const userGiven = args[0];
         const userData =
             userGiven && userGiven !== message.author
                 ? await getUserInfo(userGiven)
