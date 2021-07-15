@@ -1,6 +1,5 @@
 import { Event, Command } from "../Interfaces";
 import { Message, Collection } from "discord.js";
-import { blacklistedWords } from "../Assets/blacklistedWords";
 import { evaluateArguments } from "../Utils/format";
 import { createEmbed } from "../Utils/format";
 import { Argument } from "../Interfaces/Command";
@@ -68,7 +67,14 @@ export const event: Event = {
                 client.aliases.get(commandName);
 
             // Checking if command is valid
-            if (!command) return;
+            if (!command)
+                return await message.channel.send(
+                    createEmbed(
+                        "Command Not Found",
+                        `Type \`${client.config.prefix}help\` for a full list of commands`,
+                        "red"
+                    )
+                );
 
             if (
                 command.cooldown &&
@@ -81,20 +87,13 @@ export const event: Event = {
             if (command?.args) {
                 args = evaluateArguments(
                     client,
+                    message,
                     rawArgs,
                     command.args,
                     command.required || 0
                 );
             }
-            (command as Command).run(
-                client,
-                message,
-                args,
-                await getUserInfo(message.author)
-            );
-
-            // Auto Moderator
-            blacklistedWords;
+            (command as Command).run(client, message, args);
         } catch (err) {
             let embed = createEmbed("Error", `${err}`, "red");
             message.channel.send(embed);

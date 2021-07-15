@@ -9,12 +9,9 @@ export const command: Command = {
     args: ["user"],
     description: "",
     cooldown: 5,
-    run: async (client, message, args: [User], user) => {
-        const userGiven = args[0];
-        const userData =
-            userGiven && userGiven !== message.author
-                ? await getUserInfo(userGiven)
-                : user;
+    run: async (client, message, args) => {
+        const userGiven = (args[0] || message.author) as User;
+        const userData = await getUserInfo(userGiven);
         const embed = createEmbed("Levels", `${userData.xp} xp`);
         message.channel.send(embed);
     },

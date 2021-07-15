@@ -1,16 +1,10 @@
 import Client from "../Client";
-import { Message, User } from "discord.js";
-import { User as UserModel } from "../Interfaces/Models";
+import { Message, User, GuildMember } from "discord.js";
 
-export type Argument = User | string | number | null;
+export type Argument = User | GuildMember | string | number | null;
 
 interface Run {
-    (
-        client: Client,
-        message: Message,
-        args: Argument[] | null,
-        user: UserModel
-    );
+    (client: Client, message: Message, args: Argument[] | null);
 }
 
 export interface Command {
